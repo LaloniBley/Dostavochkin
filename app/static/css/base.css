@@ -1,0 +1,164 @@
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600;700&display=swap');
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --orange: #FD9C19;
+    --orange-light: #FFB84D;
+    --gray-bg: #EAEAEA;
+    --gray-input: #F0F0F0;
+    --black: #232323;
+    --white: #FFFFFF;
+    --text-gray: #666666;
+    --border-gray: #D9D9D9;
+}
+
+body {
+    font-family: 'Montserrat Alternates', sans-serif;
+    color: var(--black);
+    background-color: var(--white);
+    line-height: 1.6;
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+.header {
+    background-color: var(--white);
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-gray);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    background-color: var(--orange);
+    color: var(--white);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--black);
+}
+
+.btn-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--orange);
+    color: var(--white);
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.btn-profile:hover {
+    background-color: #E88B0E;
+}
+
+.profile-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 30px 0 40px;
+    background-color: var(--white);
+}
+
+/* Footer */
+.footer {
+    background-color: var(--white);
+    padding: 30px 0;
+    border-top: 1px solid var(--border-gray);
+    margin-top: auto;
+}
+
+.footer-bottom {
+    text-align: center;
+    color: var(--text-gray);
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+/* Логотип - гарантируем горизонтальное выравнивание */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.logo-icon {
+    background-color: var(--orange);
+    color: var(--white);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1;
+    display: inline-block;
+}

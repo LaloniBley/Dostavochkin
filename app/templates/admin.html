@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель - Доставочкин</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <style>
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal-content { background: white; margin: 50px auto; padding: 20px; width: 80%; max-width: 900px; border-radius: 10px; max-height: 80%; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close { cursor: pointer; font-size: 24px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background: #f5f5f5; }
+        .btn-edit, .btn-delete { padding: 5px 10px; margin: 0 5px; cursor: pointer; border: none; border-radius: 5px; }
+        .btn-edit { background: #4CAF50; color: white; }
+        .btn-delete { background: #f44336; color: white; }
+        .btn-save { background: #2196F3; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; }
+        .edit-input { width: 100%; padding: 5px; }
+        .file-input-group { display: flex; gap: 10px; margin-top: 10px; }
+        .file-input-group input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .file-input-group button { padding: 10px 20px; background: var(--orange); color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .status-select { padding: 5px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <a href="/">
+                    <span class="logo-icon">Д</span>
+                    <span class="logo-text">Доставочкин</span>
+                </a>
+            </div>
+            <div class="header-actions">
+                <a href="/logout" class="btn-logout">Выйти</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="admin-header">
+                <h1 class="admin-title">Панель администратора</h1>
+                <p class="admin-subtitle">Добро пожаловать, <strong>{{ session.user_login }}</strong>! Управляйте системой здесь.</p>
+            </div>
+
+            <div class="admin-grid">
+                <div class="admin-card" onclick="showOrdersModal()">
+                    <div class="card-icon">📦</div>
+                    <h3>Все заказы</h3>
+                    <p>Просмотр и управление текущими доставками</p>
+                </div>
+                <div class="admin-card" onclick="showUsersModal()">
+                    <div class="card-icon">👥</div>
+                    <h3>Пользователи</h3>
+                    <p>Список зарегистрированных клиентов</p>
+                    <p>Управление пользователями</p>
+                </div>
+                <div class="admin-card" onclick="showFileModal()">
+                    <div class="card-icon">⚙️</div>
+                    <h3>Управление данными</h3>
+                    <p>Загрузка/сохранение данных из файла</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Доставочкин. Административная панель.</p>
+        </div>
+    </footer>
+
+    <!-- Модальное окно заказов -->
+    <div id="ordersModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Управление заказами</h2>
+                <span class="close" onclick="closeModal('ordersModal')">&times;</span>
+            </div>
+            <div id="ordersList">
+                <table id="ordersTable">
+                    <thead>
+                        <tr><th>Номер</th><th>Пользователь</th><th>Откуда</th><th>Куда</th><th>Расстояние</th><th>Тариф</th><th>Цена</th><th>Статус</th><th>Действия</th></tr>
+                    </thead>
+                    <tbody id="ordersTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно пользователей -->
+    <div id="usersModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Управление пользователями</h2>
+                <span class="close" onclick="closeModal('usersModal')">&times;</span>
+            </div>
+            <div id="usersList">
+                <table id="usersTable">
+                    <thead>
+                        <tr><th>Логин</th><th>ФИО</th><th>Телефон</th><th>Админ</th><th>Действия</th></tr>
+                    </thead>
+                    <tbody id="usersTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно файла -->
+    <div id="fileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Управление файлом данных</h2>
+                <span class="close" onclick="closeModal('fileModal')">&times;</span>
+            </div>
+            <div>
+                <p>Текущий файл данных: <strong id="currentFilename">data.dat</strong></p>
+                <div class="file-input-group">
+                    <input type="text" id="filenameInput" placeholder="Имя файла (например, mydata.dat)">
+                    <button onclick="setDataFile()">Установить файл</button>
+                </div>
+                <div class="file-input-group" style="margin-top: 20px;">
+                    <button onclick="loadData()" style="background: #4CAF50;">Загрузить данные из файла</button>
+                </div>
+                <div id="loadResult" style="margin-top: 10px; padding: 10px; border-radius: 5px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Проверка авторизации админа при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем, админ ли пользователь через сессию
+            fetch('/admin/users')
+                .then(response => {
+                    if (response.status === 401) {
+                        window.location.href = '/login';
+                    }
+                });
+        });
+
+        async function showOrdersModal() {
+            document.getElementById('ordersModal').style.display = 'block';
+            await loadOrders();
+        }
+
+        async function showUsersModal() {
+            document.getElementById('usersModal').style.display = 'block';
+            await loadUsers();
+        }
+
+        function showFileModal() {
+            document.getElementById('fileModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        async function loadOrders() {
+            try {
+                const response = await fetch('/admin/orders');
+                const data = await response.json();
+                const tbody = document.getElementById('ordersTableBody');
+                tbody.innerHTML = '';
+
+                data.orders.forEach(order => {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).textContent = order.order_id;
+                    row.insertCell(1).textContent = order.user_name;
+                    row.insertCell(2).textContent = order.pickup_address.substring(0, 30);
+                    row.insertCell(3).textContent = order.delivery_address.substring(0, 30);
+                    row.insertCell(4).textContent = order.distance + ' км';
+                    row.insertCell(5).textContent = order.tariff;
+                    row.insertCell(6).textContent = order.price + ' ₽';
+
+                    const statusCell = row.insertCell(7);
+                    const select = document.createElement('select');
+                    select.className = 'status-select';
+                    select.innerHTML = `
+                        <option value="active" ${order.status === 'active' ? 'selected' : ''}>Активен</option>
+                        <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Доставлен</option>
+                        <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Отменён</option>
+                    `;
+                    select.onchange = () => updateOrderStatus(order.id, select.value);
+                    statusCell.appendChild(select);
+
+                    const actionsCell = row.insertCell(8);
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'Удалить';
+                    deleteBtn.className = 'btn-delete';
+                    deleteBtn.onclick = () => deleteOrder(order.id);
+                    actionsCell.appendChild(deleteBtn);
+                });
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        async function loadUsers() {
+            try {
+                const response = await fetch('/admin/users');
+                const data = await response.json();
+                const tbody = document.getElementById('usersTableBody');
+                tbody.innerHTML = '';
+
+                data.users.forEach(user => {
+                    const row = tbody.insertRow();
+
+                    const loginCell = row.insertCell(0);
+                    const loginInput = document.createElement('input');
+                    loginInput.type = 'text';
+                    loginInput.value = user.login;
+                    loginInput.className = 'edit-input';
+                    loginInput.disabled = true;
+                    loginCell.appendChild(loginInput);
+
+                    const nameCell = row.insertCell(1);
+                    const nameInput = document.createElement('input');
+                    nameInput.type = 'text';
+                    nameInput.value = `${user.lastname} ${user.firstname} ${user.middlename}`;
+                    nameInput.className = 'edit-input';
+                    nameInput.disabled = true;
+                    nameCell.appendChild(nameInput);
+
+                    const phoneCell = row.insertCell(2);
+                    const phoneInput = document.createElement('input');
+                    phoneInput.type = 'text';
+                    phoneInput.value = user.phone;
+                    phoneInput.className = 'edit-input';
+                    phoneInput.disabled = true;
+                    phoneCell.appendChild(phoneInput);
+
+                    row.insertCell(3).textContent = user.is_admin ? 'Да' : 'Нет';
+
+                    const actionsCell = row.insertCell(4);
+                    const editBtn = document.createElement('button');
+                    editBtn.textContent = 'Редактировать';
+                    editBtn.className = 'btn-edit';
+                    let isEditing = false;
+
+                    editBtn.onclick = () => {
+                        if (!isEditing) {
+                            loginInput.disabled = false;
+                            nameInput.disabled = false;
+                            phoneInput.disabled = false;
+                            editBtn.textContent = 'Сохранить';
+                            isEditing = true;
+                        } else {
+                            const nameParts = nameInput.value.split(' ');
+                            updateUser(user.id, {
+                                login: loginInput.value,
+                                lastname: nameParts[0] || '',
+                                firstname: nameParts[1] || '',
+                                middlename: nameParts[2] || '',
+                                phone: phoneInput.value
+                            });
+                            loginInput.disabled = true;
+                            nameInput.disabled = true;
+                            phoneInput.disabled = true;
+                            editBtn.textContent = 'Редактировать';
+                            isEditing = false;
+                        }
+                    };
+                    actionsCell.appendChild(editBtn);
+
+                    if (!user.is_admin) {
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.textContent = 'Удалить';
+                        deleteBtn.className = 'btn-delete';
+                        deleteBtn.onclick = () => deleteUser(user.id);
+                        actionsCell.appendChild(deleteBtn);
+                    }
+                });
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        async function updateOrderStatus(orderId, status) {
+            try {
+                await fetch(`/admin/update_order/${orderId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: status })
+                });
+                alert('Статус обновлён');
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        async function deleteOrder(orderId) {
+            if (confirm('Удалить этот заказ?')) {
+                try {
+                    await fetch(`/admin/delete_order/${orderId}`, { method: 'POST' });
+                    alert('Заказ удалён');
+                    loadOrders();
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                }
+            }
+        }
+
+        async function updateUser(userId, data) {
+            try {
+                await fetch(`/admin/update_user/${userId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                alert('Пользователь обновлён');
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        async function deleteUser(userId) {
+            if (confirm('Удалить этого пользователя? Все его заказы также будут удалены.')) {
+                try {
+                    await fetch(`/admin/delete_user/${userId}`, { method: 'POST' });
+                    alert('Пользователь удалён');
+                    loadUsers();
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                }
+            }
+        }
+
+        async function setDataFile() {
+            const filename = document.getElementById('filenameInput').value;
+            if (!filename) {
+                alert('Введите имя файла');
+                return;
+            }
+
+            try {
+                const response = await fetch('/admin/set_data_file', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: filename })
+                });
+                const data = await response.json();
+                document.getElementById('currentFilename').textContent = data.filename;
+                alert(`Файл данных установлен: ${data.filename}`);
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        async function loadData() {
+            const resultDiv = document.getElementById('loadResult');
+            resultDiv.innerHTML = 'Загрузка...';
+            resultDiv.style.backgroundColor = '#FFF3E0';
+
+            try {
+                const response = await fetch('/admin/load_data', { method: 'POST' });
+                const data = await response.json();
+                resultDiv.innerHTML = `✅ Данные загружены! Пользователей: ${data.users_count}, Заказов: ${data.orders_count}`;
+                resultDiv.style.backgroundColor = '#E8F5E9';
+                setTimeout(() => {
+                    resultDiv.innerHTML = '';
+                }, 3000);
+            } catch (error) {
+                resultDiv.innerHTML = '❌ Ошибка при загрузке данных';
+                resultDiv.style.backgroundColor = '#FFEBEE';
+                console.error('Ошибка:', error);
+            }
+        }
+
+        // Закрытие модальных окон при клике вне
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

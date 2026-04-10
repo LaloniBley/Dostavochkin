@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доставочкин - Самая быстрая доставка</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <a href="/" style="text-decoration: none;">
+                    <span class="logo-icon">Д</span>
+                    <span class="logo-text">Доставочкин</span>
+                </a>
+            </div>
+            {% if session.user_id %}
+            <a href="/profile" class="btn-profile">
+                <img src="{{ url_for('static', filename='images/header-icon-2.png') }}" alt="" class="profile-icon">
+                Личный кабинет
+            </a>
+            {% else %}
+            <nav class="nav">
+                <a href="/login" class="btn btn-login">
+                    <svg class="login-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                        <polyline points="10 17 15 12 10 7"/>
+                        <line x1="15" y1="12" x2="3" y2="12"/>
+                    </svg>
+                    Войти
+                </a>
+                <a href="/register" class="btn btn-register">
+                    <svg class="register-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M12 14c-6 0-8 3-8 6v2h16v-2c0-3-2-6-8-6z"/>
+                    </svg>
+                    Регистрация
+                </a>
+            </nav>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages" style="max-width: 1200px; margin: 20px auto; padding: 0 20px;">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}" style="padding: 12px 20px; border-radius: 8px; margin-bottom: 10px;
+                        {% if category == 'success' %}background-color: #4CAF50; color: white;
+                        {% elif category == 'error' %}background-color: #f44336; color: white;
+                        {% elif category == 'info' %}background-color: #2196F3; color: white;
+                        {% else %}background-color: #ff9800; color: white;{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <p class="hero-subtitle">Самая быстрая доставка</p>
+                <h1 class="hero-title">Доставим быстрее,<br>чем Вы ожидаете</h1>
+                <p class="hero-description">
+                    Мы заботимся о Вашем времени. Надежная курьерская служба
+                    для физических и юридических лиц в Москве.
+                </p>
+                <button class="btn btn-primary btn-hero" onclick="window.location.href='{{ "/calculator" if session.user_id else "/login" }}'">
+                    <img src="{{ url_for('static', filename='images/rocket-icon.png') }}" alt="" class="btn-hero-icon">
+                    Заказать доставку
+                </button>
+            </div>
+            <div class="hero-image-wrapper">
+                <img src="{{ url_for('static', filename='images/1.jpg') }}" alt="Курьер с посылками" class="hero-image">
+                <div class="floating-badge">
+                    <span class="badge-dot"></span>
+                    <div class="badge-text">
+                        <strong>Курьер в пути</strong>
+                        <p>До прибытия курьера осталось 25 минут</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing">
+        <div class="container">
+            <h2 class="section-title">Наши тарифы</h2>
+            <p class="section-subtitle">Выберите подходящий тариф для ваших задач</p>
+
+            <div class="pricing-grid">
+                <!-- Card 1 -->
+                <div class="pricing-card">
+                    <div class="card-icon">
+                        <img src="{{ url_for('static', filename='images/walk-icon.png') }}" alt="Пеший курьер">
+                    </div>
+                    <h3 class="card-title">Доходяга</h3>
+                    <div class="card-price">
+                        <span class="price">29</span>
+                        <span class="price-unit">₽ за км</span>
+                    </div>
+                    <ul class="card-features">
+                        <li>от 5 до 10 кг</li>
+                        <li>Доставка до 4 часов</li>
+                        <li>Страховка груза</li>
+                    </ul>
+                    <p class="card-note">(в радиусе 70 км)</p>
+                    <button class="btn btn-outline" onclick="window.location.href='{{ "/order" if session.user_id else "/login" }}'">Выбрать</button>
+                </div>
+
+                <!-- Card 2 - Featured -->
+                <div class="pricing-card featured">
+                    <div class="hit-label">Хит</div>
+                    <div class="card-icon">
+                        <img src="{{ url_for('static', filename='images/van-icon.png') }}" alt="Авто доставка">
+                    </div>
+                    <h3 class="card-title">Бусик</h3>
+                    <div class="card-price">
+                        <span class="price">59</span>
+                        <span class="price-unit">₽ за км</span>
+                    </div>
+                    <ul class="card-features">
+                        <li>до 200 кг</li>
+                        <li>Доставка до 2,5 часов</li>
+                        <li>Погрузка разгрузка</li>
+                    </ul>
+                    <p class="card-note">(в радиусе 70 км)</p>
+                    <button class="btn btn-primary" onclick="window.location.href='{{ "/order" if session.user_id else "/login" }}'">Выбрать</button>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="pricing-card">
+                    <div class="card-icon">
+                        <img src="{{ url_for('static', filename='images/plane-icon.png') }}" alt="Экспресс доставка">
+                    </div>
+                    <h3 class="card-title">Скороход</h3>
+                    <div class="card-price">
+                        <span class="price">129</span>
+                        <span class="price-unit">₽ за км</span>
+                    </div>
+                    <ul class="card-features">
+                        <li>Любой вес</li>
+                        <li>Персональный менеджер</li>
+                        <li>Доставка до 60 минут</li>
+                        <li>Приоритет в очереди</li>
+                    </ul>
+                    <p class="card-note">(в радиусе 70 км)</p>
+                    <button class="btn btn-outline" onclick="window.location.href='{{ "/order" if session.user_id else "/login" }}'">Выбрать</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="why-us">
+        <div class="container">
+            <h2 class="section-title why-title">Почему выбирают "Доставочкин"?</h2>
+            <div class="why-content">
+                <div class="why-image">
+                    <img src="{{ url_for('static', filename='images/2.jpg') }}" alt="Курьер доставляет посылку">
+                </div>
+                <div class="why-text">
+                    <p class="why-description">
+                        Мы работаем на рынке логистики уже более 10 лет. Начав с небольшой
+                        команды курьеров в Москве, сегодня мы доставляем тысячи заказов
+                        ежедневно по всей Москве. Наша миссия - делать доставку простой,
+                        прозрачной и доступной для каждого.
+                    </p>
+
+                    <div class="stats-grid">
+                        <div class="stat-card stat-orange">
+                            <img src="{{ url_for('static', filename='images/stat-time.png') }}" alt="" class="stat-icon-img">
+                            <div class="stat-value">42 минуты</div>
+                            <div class="stat-label">Среднее время доставки</div>
+                        </div>
+                        <div class="stat-card stat-green">
+                            <img src="{{ url_for('static', filename='images/stat-box.png') }}" alt="" class="stat-icon-img">
+                            <div class="stat-value">более 1.5 миллиона</div>
+                            <div class="stat-label">Доставлено заказов за 2025 год</div>
+                        </div>
+                        <div class="stat-card stat-blue">
+                            <img src="{{ url_for('static', filename='images/stat-people.png') }}" alt="" class="stat-icon-img">
+                            <div class="stat-value">950+</div>
+                            <div class="stat-label">Курьеров на линии</div>
+                        </div>
+                        <div class="stat-card stat-pink">
+                            <img src="{{ url_for('static', filename='images/stat-check.png') }}" alt="" class="stat-icon-img">
+                            <div class="stat-value">99,9%</div>
+                            <div class="stat-label">Надежность</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promotions Section -->
+    <section class="promotions">
+        <div class="container">
+            <div class="promotions-wrapper">
+                <h2 class="section-title text-white">Акции и спецпредложения</h2>
+                <p class="section-subtitle text-white-opacity">
+                    Экономьте вместе с нашими выгодными предложениями
+                </p>
+
+                <div class="promo-grid">
+                    <div class="promo-card">
+                        <div class="promo-badge new">НОВИЧКАМ</div>
+                        <img src="{{ url_for('static', filename='images/promo-discount.png') }}" alt="" class="promo-card-icon">
+                        <h3 class="promo-title">Скидка 20% на первый заказ</h3>
+                        <p class="promo-text">
+                            Попробуйте наш сервис и убедитесь в скорости!
+                            Используйте промокод START20.
+                        </p>
+                    </div>
+
+                    <div class="promo-card">
+                        <div class="promo-badge special">Спецпредложение</div>
+                        <img src="{{ url_for('static', filename='images/promo-gift.png') }}" alt="" class="promo-card-icon">
+                        <h3 class="promo-title">Бесплатная доставка от 5000₽</h3>
+                        <p class="promo-text">
+                            Для заказов из интернет-магазинов действуют
+                            специальные условия. Подключайтесь!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <div class="logo footer-logo">
+                        <span class="logo-icon">Д</span>
+                        <span class="logo-text footer-logo-text">Доставочкин</span>
+                    </div>
+                    <p class="footer-description">
+                        Надежный сервис экспресс-доставки для бизнеса и частных лиц.
+                        Мы там, где мы нужны.
+                    </p>
+                </div>
+
+                <div class="footer-center">
+                    <h4 class="footer-title">Контакты</h4>
+                    <div class="footer-contacts">
+                        <a href="tel:8-800-555-35-35" class="contact-link">
+                            <img src="{{ url_for('static', filename='images/icon-phone.png') }}" alt="" class="footer-icon">
+                            8-800-555-35-35
+                        </a>
+                        <a href="mailto:info@dostavochkin.ru" class="contact-link">
+                            <img src="{{ url_for('static', filename='images/icon-email.png') }}" alt="" class="footer-icon">
+                            info@dostavochkin.ru
+                        </a>
+                        <div class="contact-link">
+                            <img src="{{ url_for('static', filename='images/icon-location.png') }}" alt="" class="footer-icon">
+                            г. Москва, ул. Пушкина, 5
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-right">
+                    <div class="legal-info">
+                        <img src="{{ url_for('static', filename='images/icon-legal.png') }}" alt="" class="footer-icon legal-icon-img">
+                        <div class="legal-text">
+                            <span class="legal-title">Юридическая информация</span>
+                            <span class="legal-inn">ИНН: 5475642154162803</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 Доставочкин. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

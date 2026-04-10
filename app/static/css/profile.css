@@ -1,0 +1,433 @@
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600;700&display=swap');
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --orange: #FD9C19;
+    --orange-light: #FFB84D;
+    --orange-oval: #FFE4CC;
+    --gray-bg: #EAEAEA;
+    --black: #232323;
+    --white: #FFFFFF;
+    --text-gray: #666666;
+    --border-gray: #D9D9D9;
+    --green: #4CAF50;
+    --error-red: #FF3B30;
+}
+
+body {
+    font-family: 'Montserrat Alternates', sans-serif;
+    color: var(--black);
+    background-color: var(--white);
+    line-height: 1.6;
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ========== HEADER STYLES ========== */
+.profile-header {
+    background-color: var(--white);
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-gray);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.logo-icon {
+    background-color: var(--orange);
+    color: var(--white);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--black);
+}
+
+/* Navigation */
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+/* Oval buttons (Изменить заказ, Калькулятор стоимости) */
+.nav-oval {
+    background-color: var(--orange-oval);
+    color: var(--black);
+}
+
+.nav-oval:hover {
+    background-color: #FFD9B3;
+}
+
+/* Logout button */
+.nav-logout {
+    background-color: transparent;
+    color: var(--black);
+}
+
+.nav-logout:hover {
+    color: var(--error-red);
+}
+
+.nav-logout svg {
+    stroke: currentColor;
+}
+
+/* Profile button */
+.nav-profile {
+    background-color: var(--orange);
+    color: var(--white);
+}
+
+.nav-profile:hover {
+    background-color: #E88B0E;
+}
+
+.nav-profile svg {
+    stroke: var(--white);
+}
+
+/* Settings button */
+.nav-settings {
+    background-color: transparent;
+    padding: 10px;
+    border: 2px solid var(--border-gray);
+}
+
+.nav-settings:hover {
+    border-color: var(--orange);
+}
+
+.nav-settings svg {
+    stroke: var(--text-gray);
+}
+
+/* ========== MAIN CONTENT ========== */
+.main-content {
+    flex: 1;
+    padding: 40px 0;
+}
+
+.profile-title-section {
+    margin-bottom: 40px;
+}
+
+.profile-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 10px;
+}
+
+.profile-greeting {
+    font-size: 18px;
+    color: var(--text-gray);
+}
+
+/* Active Orders Card */
+.active-orders-card {
+    background-color: var(--white);
+    border: 2px solid var(--border-gray);
+    border-radius: 20px;
+    padding: 25px 30px;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    max-width: 400px;
+}
+
+.active-orders-label {
+    font-size: 18px;
+    color: var(--text-gray);
+    font-weight: 500;
+}
+
+.active-orders-count {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.box-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.count-number {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--orange);
+}
+
+/* Orders Section */
+.orders-section {
+    background-color: var(--white);
+    border: 2px solid var(--border-gray);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 40px;
+}
+
+.orders-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 25px;
+}
+
+/* Orders Table */
+.orders-table-wrapper {
+    overflow-x: auto;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.orders-table thead {
+    background-color: var(--gray-bg);
+}
+
+.orders-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--black);
+    border-bottom: 2px solid var(--border-gray);
+}
+
+.orders-table td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-gray);
+    color: var(--text-gray);
+}
+
+.orders-table tbody tr:hover {
+    background-color: #FFF4E6;
+}
+
+.order-id {
+    font-weight: 600;
+    color: var(--black);
+}
+
+.order-tariff {
+    font-weight: 600;
+}
+
+.tariff-dohodyaga {
+    color: #78909C;
+}
+
+.tariff-busik {
+    color: var(--orange);
+}
+
+.tariff-skorohod {
+    color: #1E88E5;
+}
+
+.order-status {
+    font-weight: 600;
+}
+
+.status-v-puti {
+    color: #1E88E5;
+}
+
+.status-poisk-kurera {
+    color: var(--orange);
+}
+
+.status-dostavlen {
+    color: var(--green);
+}
+
+.order-price {
+    font-weight: 700;
+    color: var(--black);
+}
+
+/* Empty State */
+.empty-orders {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-icon {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-text {
+    font-size: 18px;
+    color: var(--text-gray);
+    margin-bottom: 25px;
+}
+
+.btn-first-order {
+    display: inline-block;
+    background-color: var(--orange);
+    color: var(--white);
+    padding: 14px 32px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.btn-first-order:hover {
+    background-color: #E88B0E;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(253, 156, 25, 0.3);
+}
+
+/* Footer */
+.profile-footer {
+    background-color: var(--white);
+    padding: 30px 0;
+    border-top: 1px solid var(--border-gray);
+    margin-top: auto;
+}
+
+.profile-footer p {
+    text-align: center;
+    color: var(--text-gray);
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .header-nav {
+        gap: 10px;
+    }
+
+    .nav-btn {
+        padding: 8px 15px;
+        font-size: 13px;
+    }
+
+    .orders-table {
+        font-size: 12px;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding: 10px 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .header-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .profile-title {
+        font-size: 28px;
+    }
+
+    .active-orders-card {
+        max-width: 100%;
+        padding: 20px;
+    }
+
+    .orders-section {
+        padding: 20px 15px;
+    }
+}
+
+@media (max-width: 600px) {
+    .header-nav {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .nav-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .profile-title {
+        font-size: 24px;
+    }
+
+    .orders-table-wrapper {
+        overflow-x: scroll;
+    }
+
+    .orders-table {
+        min-width: 600px;
+    }
+
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+    }
+}

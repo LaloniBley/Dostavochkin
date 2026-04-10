@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в аккаунт - Доставочкин</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <style>
+        /* Стили для всплывающих уведомлений */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-error {
+            background: #f44336;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            font-size: 14px;
+        }
+
+        .toast-success {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            font-size: 14px;
+        }
+
+        .toast-warning {
+            background: #ff9800;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            font-size: 14px;
+        }
+
+        .toast-info {
+            background: #2196F3;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            font-size: 14px;
+        }
+
+        .toast-close {
+            margin-left: auto;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .toast-close:hover {
+            opacity: 0.8;
+        }
+
+        /* Стили для ошибок под полями */
+        .field-error {
+            color: #f44336;
+            font-size: 12px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .form-input.error {
+            border-color: #f44336;
+            background-color: #fff5f5;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <a href="/">
+                    <span class="logo-icon">Д</span>
+                    <span class="logo-text">Доставочкин</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Контейнер для всплывающих уведомлений -->
+    <div id="toastContainer" class="toast-notification"></div>
+
+    <section class="login">
+        <div class="container">
+            <div class="login-header">
+                <h1 class="login-title">Вход в аккаунт</h1>
+                <p class="login-subtitle">Рады видеть Вас снова! Пожалуйста, введите свои данные.</p>
+            </div>
+
+            <div class="login-wrapper">
+                <form class="login-form" id="loginForm" action="/login" method="POST">
+                    <div class="form-group">
+                        <label class="form-label">Логин:</label>
+                        <div class="input-wrapper">
+                            <img src="{{ url_for('static', filename='images/icon-lastname.png') }}" alt="" class="input-icon">
+                            <input type="text" name="login" id="login" class="form-input" placeholder="userexemple123" required>
+                        </div>
+                        <span class="field-error" id="loginError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Пароль:</label>
+                        <div class="input-wrapper">
+                            <img src="{{ url_for('static', filename='images/icon-lock.png') }}" alt="" class="input-icon">
+                            <input type="password" name="password" id="password" class="form-input" placeholder="******" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('password', this)">
+                                <img src="{{ url_for('static', filename='images/icon-eye.png') }}" alt="" class="eye-icon">
+                            </button>
+                        </div>
+                        <span class="field-error" id="passwordError"></span>
+                    </div>
+
+                    <button type="submit" class="btn-login">Войти</button>
+
+                    <div class="divider">
+                        <span>или</span>
+                    </div>
+
+                    <div class="register-link">
+                        Нет аккаунта? <a href="/register" class="link-register">Зарегистрироваться</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 Доставочкин. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Функция показа всплывающего уведомления
+        function showToast(message, type = 'error') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-${type}`;
+
+            let icon = '';
+            if (type === 'success') icon = '✅';
+            else if (type === 'warning') icon = '⚠️';
+            else if (type === 'info') icon = 'ℹ️';
+
+            toast.innerHTML = `
+                <span>${icon}</span>
+                <span>${message}</span>
+                <span class="toast-close" onclick="this.parentElement.remove()">×</span>
+            `;
+
+            container.appendChild(toast);
+
+            // Автоматическое удаление через 5 секунд
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 5000);
+        }
+
+        // Функция валидации формы на клиенте
+        function validateForm() {
+            let isValid = true;
+
+            // Очищаем предыдущие ошибки
+            document.querySelectorAll('.field-error').forEach(el => el.textContent = '');
+            document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+
+            // Логин
+            const login = document.getElementById('login').value.trim();
+            if (!login) {
+                document.getElementById('loginError').textContent = 'Введите логин';
+                document.getElementById('login').classList.add('error');
+                isValid = false;
+            }
+
+            // Пароль
+            const password = document.getElementById('password').value;
+            if (!password) {
+                document.getElementById('passwordError').textContent = 'Введите пароль';
+                document.getElementById('password').classList.add('error');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                showToast('Пожалуйста, заполните все поля', 'error');
+            }
+
+            return isValid;
+        }
+
+        // Обработчик отправки формы
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            if (!validateForm()) {
+                e.preventDefault();
+            }
+        });
+
+        // Показываем flash сообщения как всплывающие уведомления
+        document.addEventListener('DOMContentLoaded', function() {
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        showToast('{{ message|safe }}', '{{ category }}');
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        });
+
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+            } else {
+                input.type = 'password';
+            }
+        }
+    </script>
+</body>
+</html>

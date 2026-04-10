@@ -1,0 +1,497 @@
+{% extends "base.html" %}
+
+{% block title %}Управление заказом - Доставочкин{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/order-management.css') }}">
+<style>
+    /* Стили для всплывающих уведомлений */
+    .toast-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .toast-error {
+        background: #f44336;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 300px;
+        font-size: 14px;
+    }
+
+    .toast-success {
+        background: #4CAF50;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 300px;
+        font-size: 14px;
+    }
+
+    .toast-close {
+        margin-left: auto;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .toast-close:hover {
+        opacity: 0.8;
+    }
+
+    /* Стили для ошибок под полями */
+    .field-error {
+        color: #f44336;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .form-input.error, .form-select.error {
+        border-color: #f44336;
+        background-color: #fff5f5;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="toastContainer" class="toast-notification"></div>
+
+<div class="container">
+    <div class="back-wrapper">
+        <a href="/profile" class="btn-back">Назад</a>
+    </div>
+
+    <div class="page-header">
+        <h1 class="page-title">Управление заказом</h1>
+        <p class="page-subtitle">Введите номер заказа, чтобы изменить детали или отменить его</p>
+    </div>
+
+    <div class="warning-banner">
+        Внимание, это может повлиять на итоговую стоимость заказа!
+    </div>
+
+    <div class="search-container">
+        <div class="search-input-wrapper">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="orderIdInput" class="form-input" placeholder="ORD-1234">
+        </div>
+        <button id="findBtn" class="btn-find">Найти</button>
+    </div>
+
+    <div id="orderDetailsForm" class="order-details-container" style="display: none;">
+        <form id="updateOrderForm" method="POST">
+            <input type="hidden" name="order_id" id="hiddenOrderId">
+            <input type="hidden" name="action" id="actionType" value="update">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Откуда забрать</label>
+                    <div class="input-with-icon">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <input type="text" name="pickup_address" id="pickupAddress" class="form-input">
+                    </div>
+                    <span class="field-error" id="pickup_address_error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Расстояние</label>
+                    <div class="input-with-suffix">
+                        <input type="number" name="distance" id="distance" class="form-input" step="0.001">
+                        <span class="input-suffix">км</span>
+                    </div>
+                    <span class="field-error" id="distance_error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Куда доставить</label>
+                    <div class="input-with-icon">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <input type="text" name="delivery_address" id="deliveryAddress" class="form-input">
+                    </div>
+                    <span class="field-error" id="delivery_address_error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Телефон получателя</label>
+                    <input type="tel" name="recipient_phone" id="recipientPhone" class="form-input">
+                    <span class="field-error" id="recipient_phone_error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Дата подачи</label>
+                    <input type="date" name="courier_date" id="courierDate" class="form-input">
+                    <span class="field-error" id="courier_date_error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Тариф</label>
+                    <div class="select-wrapper">
+                        <select name="tariff" id="tariff" class="form-select">
+                            <option value="dohodyaga">Доходяга (29 ₽/км)</option>
+                            <option value="busik">Бусик (59 ₽/км)</option>
+                            <option value="skorohod">Скороход (129 ₽/км)</option>
+                        </select>
+                    </div>
+                    <span class="field-error" id="tariff_error"></span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" id="cancelOrderBtn">Отменить заказ</button>
+                <button type="submit" class="btn-apply">Применить изменения</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let currentOrderDbId = null;
+    let currentOrderNumber = null;
+
+    // Функция показа всплывающего уведомления
+    function showToast(message, type = 'error') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `toast-${type}`;
+
+        let icon = type === 'success' ? '✅' : '❌';
+
+        toast.innerHTML = `
+            <span>${icon}</span>
+            <span>${message}</span>
+            <span class="toast-close" onclick="this.parentElement.remove()">×</span>
+        `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.remove();
+            }
+        }, 5000);
+    }
+
+    // Функция очистки ошибок
+    function clearErrors() {
+        document.querySelectorAll('.field-error').forEach(el => el.textContent = '');
+        document.querySelectorAll('.form-input, .form-select').forEach(el => el.classList.remove('error'));
+    }
+
+    // Валидация расстояния
+    function validateDistance() {
+        const distanceInput = document.getElementById('distance');
+        const distance = parseFloat(distanceInput.value);
+        const errorSpan = document.getElementById('distance_error');
+
+        if (!distanceInput.value) {
+            errorSpan.textContent = 'Укажите расстояние';
+            distanceInput.classList.add('error');
+            return false;
+        }
+        if (isNaN(distance)) {
+            errorSpan.textContent = 'Введите корректное расстояние';
+            distanceInput.classList.add('error');
+            return false;
+        }
+        if (distance <= 0) {
+            errorSpan.textContent = 'Расстояние должно быть больше 0 км';
+            distanceInput.classList.add('error');
+            return false;
+        }
+        if (distance > 70) {
+            errorSpan.textContent = 'Расстояние не может превышать 70 км';
+            distanceInput.classList.add('error');
+            return false;
+        }
+        errorSpan.textContent = '';
+        distanceInput.classList.remove('error');
+        return true;
+    }
+
+    // Валидация телефона
+    function validatePhone() {
+        const phoneInput = document.getElementById('recipientPhone');
+        const phone = phoneInput.value.trim();
+        const errorSpan = document.getElementById('recipient_phone_error');
+        const phonePattern = /^(\+7|8)[0-9]{10}$/;
+
+        if (!phone) {
+            errorSpan.textContent = 'Укажите телефон получателя';
+            phoneInput.classList.add('error');
+            return false;
+        }
+        if (!phonePattern.test(phone)) {
+            errorSpan.textContent = 'Введите корректный номер (например: +78005553535 или 88005553535)';
+            phoneInput.classList.add('error');
+            return false;
+        }
+        errorSpan.textContent = '';
+        phoneInput.classList.remove('error');
+        return true;
+    }
+
+    // Валидация адреса
+    function validateAddress(addressId, errorId, fieldName) {
+        const addressInput = document.getElementById(addressId);
+        const address = addressInput.value.trim();
+        const errorSpan = document.getElementById(errorId);
+
+        if (!address) {
+            errorSpan.textContent = `Укажите ${fieldName}`;
+            addressInput.classList.add('error');
+            return false;
+        }
+        if (address.length < 5) {
+            errorSpan.textContent = `${fieldName} должен быть не менее 5 символов`;
+            addressInput.classList.add('error');
+            return false;
+        }
+        errorSpan.textContent = '';
+        addressInput.classList.remove('error');
+        return true;
+    }
+
+    // Валидация даты
+    function validateDate() {
+        const dateInput = document.getElementById('courierDate');
+        const selectedDate = dateInput.value;
+        const errorSpan = document.getElementById('courier_date_error');
+
+        if (!selectedDate) {
+            errorSpan.textContent = 'Укажите дату подачи курьера';
+            dateInput.classList.add('error');
+            return false;
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const selected = new Date(selectedDate);
+        selected.setHours(0, 0, 0, 0);
+
+        if (selected < today) {
+            errorSpan.textContent = 'Дата не может быть в прошлом';
+            dateInput.classList.add('error');
+            return false;
+        }
+
+        errorSpan.textContent = '';
+        dateInput.classList.remove('error');
+        return true;
+    }
+
+    // Валидация тарифа
+    function validateTariff() {
+        const tariffInput = document.getElementById('tariff');
+        const tariff = tariffInput.value;
+        const errorSpan = document.getElementById('tariff_error');
+
+        if (!tariff) {
+            errorSpan.textContent = 'Выберите тариф';
+            tariffInput.classList.add('error');
+            return false;
+        }
+        errorSpan.textContent = '';
+        tariffInput.classList.remove('error');
+        return true;
+    }
+
+    document.getElementById('findBtn').addEventListener('click', async function() {
+        const orderNumber = document.getElementById('orderIdInput').value.trim();
+        const formContainer = document.getElementById('orderDetailsForm');
+
+        if (!orderNumber) {
+            showToast('Введите номер заказа', 'error');
+            formContainer.style.display = 'none';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/find-order/${orderNumber}`);
+            const data = await response.json();
+
+            if (data.success && data.order) {
+                currentOrderDbId = data.order.id;
+                currentOrderNumber = data.order.order_id;
+
+                document.getElementById('pickupAddress').value = data.order.pickup_address || '';
+                document.getElementById('deliveryAddress').value = data.order.delivery_address || '';
+                document.getElementById('distance').value = data.order.distance || '';
+                document.getElementById('recipientPhone').value = data.order.recipient_phone || '';
+                document.getElementById('courierDate').value = data.order.courier_date || '';
+                document.getElementById('tariff').value = data.order.tariff || 'dohodyaga';
+                document.getElementById('hiddenOrderId').value = currentOrderDbId;
+
+                // Очищаем ошибки
+                clearErrors();
+
+                formContainer.style.display = 'block';
+                formContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                showToast(data.message || 'Заказ с таким номером не найден', 'error');
+                formContainer.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showToast('Ошибка при поиске заказа', 'error');
+        }
+    });
+
+    document.getElementById('orderIdInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('findBtn').click();
+        }
+    });
+
+    document.getElementById('updateOrderForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Валидация всех полей
+        const isPickupValid = validateAddress('pickupAddress', 'pickup_address_error', 'адрес отправления');
+        const isDeliveryValid = validateAddress('deliveryAddress', 'delivery_address_error', 'адрес доставки');
+        const isDistanceValid = validateDistance();
+        const isPhoneValid = validatePhone();
+        const isDateValid = validateDate();
+        const isTariffValid = validateTariff();
+
+        if (!isPickupValid || !isDeliveryValid || !isDistanceValid || !isPhoneValid || !isDateValid || !isTariffValid) {
+            showToast('Пожалуйста, исправьте ошибки в форме', 'error');
+            return;
+        }
+
+        const formData = new URLSearchParams({
+            action: 'update',
+            pickup_address: document.getElementById('pickupAddress').value,
+            delivery_address: document.getElementById('deliveryAddress').value,
+            distance: parseFloat(document.getElementById('distance').value),
+            recipient_phone: document.getElementById('recipientPhone').value,
+            courier_date: document.getElementById('courierDate').value,
+            tariff: document.getElementById('tariff').value
+        });
+
+        try {
+            const response = await fetch(`/update-order/${currentOrderDbId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: formData
+            });
+
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Заказ обновлён!', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showToast(result.error || 'Ошибка при обновлении', 'error');
+                }
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showToast('Ошибка при обновлении заказа', 'error');
+        }
+    });
+
+    document.getElementById('cancelOrderBtn').addEventListener('click', async function() {
+        if (confirm('Вы уверены, что хотите отменить этот заказ?')) {
+            try {
+                const response = await fetch(`/update-order/${currentOrderDbId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        action: 'cancel'
+                    })
+                });
+
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    const result = await response.json();
+                    if (result.success) {
+                        showToast('Заказ отменён!', 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        showToast(result.error || 'Ошибка при отмене', 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showToast('Ошибка при отмене заказа', 'error');
+            }
+        }
+    });
+
+    // Добавляем валидацию при вводе
+    document.getElementById('distance').addEventListener('input', function() {
+        validateDistance();
+    });
+
+    document.getElementById('recipientPhone').addEventListener('input', function() {
+        validatePhone();
+    });
+
+    document.getElementById('pickupAddress').addEventListener('input', function() {
+        validateAddress('pickupAddress', 'pickup_address_error', 'адрес отправления');
+    });
+
+    document.getElementById('deliveryAddress').addEventListener('input', function() {
+        validateAddress('deliveryAddress', 'delivery_address_error', 'адрес доставки');
+    });
+
+    document.getElementById('courierDate').addEventListener('change', function() {
+        validateDate();
+    });
+
+    document.getElementById('tariff').addEventListener('change', function() {
+        validateTariff();
+    });
+</script>
+{% endblock %}

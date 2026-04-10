@@ -1,0 +1,509 @@
+{% extends "base.html" %}
+
+{% block title %}Оформление заказа - Доставочкин{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/order.css') }}">
+<style>
+    /* Стили для всплывающих уведомлений */
+    .toast-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .toast-error {
+        background: #f44336;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 300px;
+        font-size: 14px;
+    }
+
+    .toast-success {
+        background: #4CAF50;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 300px;
+        font-size: 14px;
+    }
+
+    .toast-warning {
+        background: #ff9800;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 300px;
+        font-size: 14px;
+    }
+
+    .toast-info {
+        background: #2196F3;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 300px;
+        font-size: 14px;
+    }
+
+    .toast-close {
+        margin-left: auto;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .toast-close:hover {
+        opacity: 0.8;
+    }
+
+    /* Стили для ошибок под полями */
+    .field-error {
+        color: #f44336;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .form-input.error, .form-select.error {
+        border-color: #f44336;
+        background-color: #fff5f5;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="toastContainer" class="toast-notification"></div>
+
+<div class="container">
+    <div class="back-wrapper">
+        <a href="/profile" class="btn-back">Назад</a>
+    </div>
+
+    <div class="order-header">
+        <h1 class="order-title">Оформление заказа</h1>
+        <p class="order-subtitle">Заполните форму, и наш курьер приедет вовремя</p>
+    </div>
+
+    <div class="order-wrapper">
+        <form class="order-form" id="orderForm" method="POST" action="/order">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Откуда забрать <span class="required-mark">*</span></label>
+                    <div class="input-with-icon">
+                        <img src="{{ url_for('static', filename='images/icon-location1.png') }}" alt="" class="input-icon">
+                        <input type="text" name="pickup_address" id="pickup_address" class="form-input required-field" placeholder="Улица, дом, квартира" required>
+                    </div>
+                    <span class="field-error" id="pickup_address_error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Дата подачи курьера <span class="required-mark">*</span></label>
+                    <div class="input-with-icon">
+                        <img src="{{ url_for('static', filename='images/icon-calendar.png') }}" alt="" class="input-icon">
+                        <input type="date" name="courier_date" id="courier_date" class="form-input required-field" required>
+                    </div>
+                    <span class="field-error" id="courier_date_error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Тариф <span class="required-mark">*</span></label>
+                    <div class="select-wrapper">
+                        <select name="tariff" id="tariff" class="form-select required-field" required onchange="calculatePrice(); validateWeight()">
+                            <option value="" disabled selected>Выберите тариф</option>
+                            <option value="dohodyaga">Доходяга (29 ₽/км, от 5 до 10 кг)</option>
+                            <option value="busik">Бусик (59 ₽/км, до 200 кг)</option>
+                            <option value="skorohod">Скороход (129 ₽/км, любой вес)</option>
+                        </select>
+                    </div>
+                    <span class="field-error" id="tariff_error"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Куда доставить <span class="required-mark">*</span></label>
+                    <div class="input-with-icon">
+                        <img src="{{ url_for('static', filename='images/icon-location1.png') }}" alt="" class="input-icon">
+                        <input type="text" name="delivery_address" id="delivery_address" class="form-input required-field" placeholder="Улица, дом, квартира" required>
+                    </div>
+                    <span class="field-error" id="delivery_address_error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Телефон получателя <span class="required-mark">*</span></label>
+                    <div class="input-with-icon">
+                        <img src="{{ url_for('static', filename='images/icon-phone1.png') }}" alt="" class="input-icon">
+                        <input type="tel" name="recipient_phone" id="recipient_phone" class="form-input required-field" placeholder="+78001113131" required>
+                    </div>
+                    <span class="field-error" id="recipient_phone_error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Расстояние <span class="required-mark">*</span></label>
+                    <div class="input-with-suffix">
+                        <input type="number" name="distance" id="distance" class="form-input required-field" placeholder="7.582" step="0.0001" min="0.001" onchange="calculatePrice(); validateDistance()" required>
+                        <span class="input-suffix">км</span>
+                    </div>
+                    <span class="field-error" id="distance_error"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Вес груза <span class="required-mark">*</span></label>
+                <div class="input-with-suffix">
+                    <input type="number" name="weight" id="weight" class="form-input required-field" placeholder="10" step="0.1" min="0" onchange="validateWeight()" required>
+                    <span class="input-suffix">кг</span>
+                </div>
+                <span class="field-error" id="weight_error"></span>
+            </div>
+
+            <div class="form-group promo-group">
+                <label class="form-label">Промокод</label>
+                <input type="text" name="promo_code" id="promoCode" class="form-input promo-input" placeholder="Введите промокод" onblur="calculatePrice()">
+            </div>
+        </form>
+
+        <div class="order-total">
+            <div class="total-label">К оплате курьеру:</div>
+            <div class="total-price" id="totalPrice">0 ₽</div>
+        </div>
+
+        <div class="order-actions">
+            <button type="button" class="btn-confirm btn-confirm-disabled" id="btnConfirmOrder" onclick="showConfirmModal()" disabled>Подтвердить заказ</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal-content">
+        <h2 class="modal-title">Подтвердить заказ?</h2>
+        <button class="btn-modal-confirm" onclick="confirmOrder()">Подтвердить</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Функция показа всплывающего уведомления
+    function showToast(message, type = 'error') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `toast-${type}`;
+
+        let icon = '❌';
+        if (type === 'success') icon = '✅';
+        else if (type === 'warning') icon = '⚠️';
+        else if (type === 'info') icon = 'ℹ️';
+
+        toast.innerHTML = `
+            <span>${icon}</span>
+            <span>${message}</span>
+            <span class="toast-close" onclick="this.parentElement.remove()">×</span>
+        `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.remove();
+            }
+        }, 5000);
+    }
+
+    // Функция очистки ошибок
+    function clearFieldErrors() {
+        document.querySelectorAll('.field-error').forEach(el => el.textContent = '');
+        document.querySelectorAll('.form-input, .form-select').forEach(el => el.classList.remove('error'));
+    }
+
+    // Валидация расстояния
+    function validateDistance() {
+        const distanceInput = document.getElementById('distance');
+        const distance = parseFloat(distanceInput.value);
+        const errorSpan = document.getElementById('distance_error');
+
+        if (!distanceInput.value) {
+            errorSpan.textContent = 'Укажите расстояние';
+            distanceInput.classList.add('error');
+            return false;
+        }
+        if (isNaN(distance) || distance <= 0) {
+            errorSpan.textContent = 'Расстояние должно быть больше 0 км';
+            distanceInput.classList.add('error');
+            return false;
+        }
+        if (distance > 70) {
+            errorSpan.textContent = 'Расстояние не может превышать 70 км';
+            distanceInput.classList.add('error');
+            return false;
+        }
+        errorSpan.textContent = '';
+        distanceInput.classList.remove('error');
+        return true;
+    }
+
+    // Валидация веса
+    function validateWeight() {
+        const weightInput = document.getElementById('weight');
+        const weight = parseFloat(weightInput.value);
+        const tariff = document.getElementById('tariff').value;
+        const errorSpan = document.getElementById('weight_error');
+
+        if (!weightInput.value) {
+            errorSpan.textContent = 'Укажите вес груза';
+            weightInput.classList.add('error');
+            return false;
+        }
+        if (isNaN(weight) || weight < 0) {
+            errorSpan.textContent = 'Вес должен быть положительным числом';
+            weightInput.classList.add('error');
+            return false;
+        }
+
+        if (tariff === 'dohodyaga') {
+            if (weight < 5) {
+                errorSpan.textContent = 'Тариф "Доходяга" доступен для веса от 5 кг';
+                weightInput.classList.add('error');
+                return false;
+            }
+            if (weight > 10) {
+                errorSpan.textContent = 'Тариф "Доходяга" доступен для веса до 10 кг';
+                weightInput.classList.add('error');
+                return false;
+            }
+        }
+
+        if (tariff === 'busik' && weight > 200) {
+            errorSpan.textContent = 'Тариф "Бусик" доступен для веса до 200 кг';
+            weightInput.classList.add('error');
+            return false;
+        }
+
+        errorSpan.textContent = '';
+        weightInput.classList.remove('error');
+        return true;
+    }
+
+    // Валидация даты (не может быть в прошлом)
+    function validateDate() {
+        const dateInput = document.getElementById('courier_date');
+        const selectedDate = dateInput.value;
+        const errorSpan = document.getElementById('courier_date_error');
+
+        if (!selectedDate) {
+            errorSpan.textContent = 'Укажите дату подачи курьера';
+            dateInput.classList.add('error');
+            return false;
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const selected = new Date(selectedDate);
+        selected.setHours(0, 0, 0, 0);
+
+        if (selected < today) {
+            errorSpan.textContent = 'Дата подачи курьера не может быть в прошлом';
+            dateInput.classList.add('error');
+            return false;
+        }
+
+        errorSpan.textContent = '';
+        dateInput.classList.remove('error');
+        return true;
+    }
+
+    // Валидация телефона
+    function validatePhone() {
+        const phoneInput = document.getElementById('recipient_phone');
+        const phone = phoneInput.value.trim();
+        const errorSpan = document.getElementById('recipient_phone_error');
+        const phonePattern = /^(\+7|8)[0-9]{10}$/;
+
+        if (!phone) {
+            errorSpan.textContent = 'Укажите телефон получателя';
+            phoneInput.classList.add('error');
+            return false;
+        }
+        if (!phonePattern.test(phone)) {
+            errorSpan.textContent = 'Введите корректный номер (например: +78005553535 или 88005553535)';
+            phoneInput.classList.add('error');
+            return false;
+        }
+        errorSpan.textContent = '';
+        phoneInput.classList.remove('error');
+        return true;
+    }
+
+    const RATES = {
+        'dohodyaga': 29,
+        'busik': 59,
+        'skorohod': 129
+    };
+
+    function calculatePrice() {
+        const distance = parseFloat(document.getElementById('distance').value) || 0;
+        const tariff = document.getElementById('tariff').value;
+        const promoCode = document.getElementById('promoCode').value.trim().toUpperCase();
+
+        let totalPrice = distance * (RATES[tariff] || 0);
+
+        if (promoCode === 'START20') {
+            totalPrice = totalPrice * 0.8;
+        }
+
+        document.getElementById('totalPrice').textContent = Math.round(totalPrice) + ' ₽';
+    }
+
+    function checkFormValidity() {
+        const requiredFields = document.querySelectorAll('.required-field');
+        const confirmButton = document.getElementById('btnConfirmOrder');
+        let allFilled = true;
+
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                allFilled = false;
+            }
+        });
+
+        // Дополнительная проверка валидности полей
+        const isDistanceValid = validateDistance();
+        const isWeightValid = validateWeight();
+        const isDateValid = validateDate();
+        const isPhoneValid = validatePhone();
+
+        if (allFilled && isDistanceValid && isWeightValid && isDateValid && isPhoneValid) {
+            confirmButton.disabled = false;
+            confirmButton.classList.remove('btn-confirm-disabled');
+        } else {
+            confirmButton.disabled = true;
+            confirmButton.classList.add('btn-confirm-disabled');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const requiredFields = document.querySelectorAll('.required-field');
+        requiredFields.forEach(field => {
+            field.addEventListener('input', function() {
+                checkFormValidity();
+                                if (field.id === 'distance') validateDistance();
+                if (field.id === 'weight') validateWeight();
+                if (field.id === 'courier_date') validateDate();
+                if (field.id === 'recipient_phone') validatePhone();
+            });
+            field.addEventListener('change', function() {
+                checkFormValidity();
+                if (field.id === 'distance') validateDistance();
+                if (field.id === 'weight') validateWeight();
+                if (field.id === 'courier_date') validateDate();
+                if (field.id === 'recipient_phone') validatePhone();
+            });
+        });
+        calculatePrice();
+
+        // Показываем flash сообщения как всплывающие уведомления
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    showToast('{{ message|safe }}', '{{ category }}');
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    });
+
+    function showConfirmModal() {
+        const form = document.getElementById('orderForm');
+
+        // Очищаем старые ошибки
+        clearFieldErrors();
+
+        // Проверяем все поля
+        const isDistanceValid = validateDistance();
+        const isWeightValid = validateWeight();
+        const isDateValid = validateDate();
+        const isPhoneValid = validatePhone();
+
+        if (!isDistanceValid) {
+            showToast('Расстояние должно быть от 0.001 до 70 км', 'error');
+            return;
+        }
+
+        if (!isWeightValid) {
+            const tariff = document.getElementById('tariff').value;
+            if (tariff === 'dohodyaga') {
+                showToast('Тариф "Доходяга" доступен для веса от 5 до 10 кг', 'error');
+            } else if (tariff === 'busik') {
+                showToast('Тариф "Бусик" доступен для веса до 200 кг', 'error');
+            } else {
+                showToast('Укажите корректный вес груза', 'error');
+            }
+            return;
+        }
+
+        if (!isDateValid) {
+            showToast('Дата подачи курьера не может быть в прошлом', 'error');
+            return;
+        }
+
+        if (!isPhoneValid) {
+            showToast('Введите корректный номер телефона (например: +78005553535 или 88005553535)', 'error');
+            return;
+        }
+
+        if (form.checkValidity()) {
+            document.getElementById('confirmModal').style.display = 'flex';
+        } else {
+            form.reportValidity();
+        }
+    }
+
+    function confirmOrder() {
+        document.getElementById('confirmModal').style.display = 'none';
+        document.getElementById('orderForm').submit();
+    }
+
+    document.getElementById('confirmModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}

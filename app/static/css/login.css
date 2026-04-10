@@ -1,0 +1,351 @@
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600;700&display=swap');
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --orange: #FD9C19;
+    --orange-light: #FFB84D;
+    --gray-bg: #EAEAEA;
+    --gray-input: #F0F0F0;
+    --black: #232323;
+    --white: #FFFFFF;
+    --text-gray: #666666;
+    --border-gray: #D9D9D9;
+}
+
+body {
+    font-family: 'Montserrat Alternates', sans-serif;
+    color: var(--black);
+    background-color: var(--white);
+    line-height: 1.6;
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+.header {
+    background-color: var(--white);
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-gray);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    background-color: var(--orange);
+    color: var(--white);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--black);
+}
+
+/* Login Section */
+.login {
+    flex: 1;
+    padding: 60px 0;
+    background-color: var(--white);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.login-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--black);
+}
+
+.login-subtitle {
+    font-size: 18px;
+    color: var(--text-gray);
+}
+
+.login-wrapper {
+    max-width: 480px;
+    margin: 0 auto;
+    background-color: var(--white);
+    border: 1px solid var(--border-gray);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Form Styles */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--black);
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px 16px 14px 56px;
+    border: 2px solid var(--gray-input);
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: 'Montserrat Alternates', sans-serif;
+    background-color: var(--gray-input);
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: var(--orange);
+    background-color: var(--white);
+    box-shadow: 0 0 0 3px rgba(253, 156, 25, 0.1);
+}
+
+.form-input::placeholder {
+    color: #999;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.password-toggle:hover {
+    opacity: 1;
+}
+
+.eye-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+}
+
+/* Login Button */
+.btn-login {
+    width: 100%;
+    padding: 16px 32px;
+    background-color: var(--orange);
+    color: var(--white);
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Montserrat Alternates', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-login:hover {
+    background-color: #E88B0E;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(253, 156, 25, 0.3);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+/* Divider */
+.divider {
+    position: relative;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: var(--border-gray);
+}
+
+.divider span {
+    background-color: var(--white);
+    padding: 0 15px;
+    color: var(--text-gray);
+    font-size: 14px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Register Link */
+.register-link {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-gray);
+}
+
+.link-register {
+    color: var(--orange);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.link-register:hover {
+    color: #E88B0E;
+    text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--white);
+    padding: 30px 0;
+    border-top: 1px solid var(--border-gray);
+    margin-top: auto;
+}
+
+.footer-bottom {
+    text-align: center;
+    color: var(--text-gray);
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .login-wrapper {
+        padding: 30px 25px;
+    }
+
+    .login-title {
+        font-size: 28px;
+    }
+
+    .login-subtitle {
+        font-size: 16px;
+    }
+
+    .form-input {
+        font-size: 14px;
+        padding: 12px 14px 12px 52px;
+    }
+
+    .input-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .eye-icon {
+        width: 22px;
+        height: 22px;
+    }
+
+    .btn-login {
+        font-size: 16px;
+        padding: 14px 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .login {
+        padding: 40px 0;
+    }
+
+    .login-header {
+        margin-bottom: 30px;
+    }
+
+    .login-wrapper {
+        padding: 25px 20px;
+        border-radius: 15px;
+    }
+
+    .form-label {
+        font-size: 14px;
+    }
+
+    .input-icon {
+        width: 24px;
+        height: 24px;
+        left: 14px;
+    }
+
+    .form-input {
+        padding: 12px 14px 12px 50px;
+        font-size: 14px;
+    }
+
+    .eye-icon {
+        width: 22px;
+        height: 22px;
+    }
+}
+.logo a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

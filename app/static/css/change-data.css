@@ -1,0 +1,228 @@
+/* Change Data Page Styles */
+
+.change-data-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 40px 0;
+}
+
+.data-section {
+    background-color: var(--white);
+    border: 2px solid var(--border-gray);
+    border-radius: 20px;
+    padding: 40px;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.data-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black);
+}
+
+.field-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    opacity: 0.6;
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--gray-input);
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: 'Montserrat Alternates', sans-serif;
+    background-color: var(--gray-input);
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: var(--orange);
+    background-color: var(--white);
+    box-shadow: 0 0 0 3px rgba(253, 156, 25, 0.1);
+}
+
+.form-input[readonly] {
+    background-color: #E0E0E0;
+    cursor: not-allowed;
+}
+
+/* Password Wrapper */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper .form-input {
+    padding-right: 50px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.password-toggle:hover {
+    opacity: 1;
+}
+
+.eye-icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+/* Change Button */
+.btn-change {
+    width: 100%;
+    padding: 16px 32px;
+    background-color: var(--orange);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Montserrat Alternates', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-change:hover {
+    background-color: #E88B0E;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(253, 156, 25, 0.3);
+}
+
+.btn-change:active {
+    transform: translateY(0);
+}
+
+/* Requirements Box */
+.requirements-box {
+    background-color: var(--white);
+    border: 2px solid var(--border-gray);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 10px;
+}
+
+.requirements-section {
+    margin-bottom: 15px;
+}
+
+.requirements-section:last-child {
+    margin-bottom: 0;
+}
+
+.requirements-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--black);
+}
+
+.requirements-list {
+    padding-left: 18px;
+    color: var(--text-gray);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.requirements-list li {
+    margin-bottom: 3px;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .change-data-wrapper {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .data-section {
+        padding: 30px 25px;
+    }
+
+    .section-title {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 600px) {
+    .change-data-wrapper {
+        padding: 20px 0;
+    }
+
+    .data-section {
+        padding: 25px 20px;
+        border-radius: 15px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        font-size: 14px;
+    }
+
+    .form-input {
+        font-size: 14px;
+        padding: 12px 14px;
+    }
+
+    .btn-change {
+        font-size: 16px;
+        padding: 14px 24px;
+    }
+
+    .requirements-box {
+        padding: 15px;
+    }
+
+    .requirements-title {
+        font-size: 13px;
+    }
+
+    .requirements-list {
+        font-size: 11px;
+    }
+}

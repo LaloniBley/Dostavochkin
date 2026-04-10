@@ -1,0 +1,411 @@
+/* Order Section - специфичные стили */
+
+/* Back Button Wrapper - слева под хеддером */
+.back-wrapper {
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-gray);
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 20px;
+    border: 2px solid var(--border-gray);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+}
+
+/* Order Header */
+.order-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.order-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--black);
+}
+
+.order-subtitle {
+    font-size: 16px;
+    color: var(--text-gray);
+}
+
+.order-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: var(--white);
+    border: 2px solid var(--border-gray);
+    border-radius: 20px;
+    padding: 40px;
+}
+
+/* Form Styles */
+.order-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black);
+}
+
+.required-mark {
+    color: var(--error-red);
+    font-size: 18px;
+    line-height: 1;
+}
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px 16px 14px 48px;
+    border: 2px solid var(--border-gray);
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: 'Montserrat Alternates', sans-serif;
+    background-color: var(--white);
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.input-with-icon .form-input {
+    padding-left: 48px;
+}
+
+.form-input:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(253, 156, 25, 0.1);
+}
+
+.form-input::placeholder {
+    color: #999;
+}
+
+.date-input {
+    cursor: pointer;
+}
+
+/* Select Wrapper */
+.select-wrapper {
+    position: relative;
+}
+
+.form-select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border-gray);
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: 'Montserrat Alternates', sans-serif;
+    background-color: var(--white);
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.form-select:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(253, 156, 25, 0.1);
+}
+
+/* Input with suffix */
+.input-with-suffix {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-suffix .form-input {
+    padding-right: 50px;
+}
+
+.input-suffix {
+    position: absolute;
+    right: 16px;
+    color: var(--text-gray);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+/* Promo Code */
+.promo-group {
+    margin-top: 10px;
+}
+
+.promo-input {
+    max-width: 400px;
+}
+
+/* Order Total - оранжевый скругленный прямоугольник */
+.order-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--orange);
+    border-radius: 12px;
+    padding: 20px 30px;
+    margin: 30px 0;
+}
+
+.total-label {
+    font-size: 18px;
+    color: var(--white);
+    font-weight: 600;
+}
+
+.total-price {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--white);
+}
+
+/* Order Number */
+.order-number {
+    font-size: 16px;
+    color: var(--black);
+    margin-bottom: 25px;
+}
+
+.order-id {
+    font-weight: 700;
+    color: var(--orange);
+}
+
+/* Order Actions */
+.order-actions {
+    text-align: right;
+}
+
+.btn-confirm {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    background-color: var(--green);
+    color: var(--green);
+    border: yes;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Montserrat Alternates', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-confirm:hover {
+    background-color: #43A047;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+}
+
+.btn-confirm:active {
+    transform: translateY(0);
+}
+
+/* Disabled state для кнопки */
+.btn-confirm-disabled {
+    background-color: #BDBDBD !important; /* Серый цвет */
+    cursor: not-allowed;
+    opacity: 1 !important; /* Не прозрачная */
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn-confirm-disabled:hover {
+    background-color: #BDBDBD !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--white);
+    padding: 50px 80px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-title {
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--black);
+    margin-bottom: 30px;
+    font-family: 'Montserrat Alternates', sans-serif;
+}
+
+.btn-modal-confirm {
+    display: inline-block;
+    padding: 16px 48px;
+    background-color: var(--green);
+    color: var(--green);
+    border: yes;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: 'Montserrat Alternates', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 1;
+}
+
+.btn-modal-confirm:hover {
+    background-color: #43A047;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .order-wrapper {
+        padding: 30px 20px;
+    }
+
+    .order-total {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .total-price {
+        font-size: 24px;
+    }
+
+    .order-actions {
+        text-align: center;
+    }
+
+    .modal-content {
+        padding: 40px 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .order-title {
+        font-size: 24px;
+    }
+
+    .order-subtitle {
+        font-size: 14px;
+    }
+
+    .form-input,
+    .form-select {
+        font-size: 14px;
+        padding: 12px 14px;
+    }
+
+    .input-with-icon .form-input {
+        padding-left: 45px;
+    }
+
+    .btn-confirm {
+        font-size: 16px;
+        padding: 14px 24px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .modal-title {
+        font-size: 24px;
+    }
+
+    .btn-modal-confirm {
+        font-size: 16px;
+        padding: 14px 32px;
+    }
+}
+
+@media (max-width: 600px) {
+    .order-header {
+        margin-bottom: 30px;
+    }
+
+    .order-wrapper {
+        padding: 25px 15px;
+        border-radius: 15px;
+    }
+
+    .form-label {
+        font-size: 14px;
+    }
+
+    .total-label {
+        font-size: 16px;
+    }
+
+    .promo-input {
+        max-width: 100%;
+    }
+
+    .btn-back {
+        font-size: 14px;
+        padding: 6px 16px;
+    }
+
+    .modal-content {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+}

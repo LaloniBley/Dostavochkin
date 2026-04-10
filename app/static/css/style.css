@@ -1,0 +1,797 @@
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600;700&display=swap');
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --orange: #FD9C19;
+    --orange-light: #FFB84D;
+    --orange-gradient-start: #FFF4E6;
+    --orange-gradient-end: #FFFFFF;
+    --promo-gradient-start: #FD9C19;
+    --promo-gradient-end: #FFB84D;
+    --gray-bg: #EAEAEA;
+    --black: #232323;
+    --white: #FFFFFF;
+    --text-gray: #666666;
+    --border-gray: #D9D9D9;
+    --result-bg: #FFF4E6;
+    --green: #4CAF50;
+    --error-red: #FF3B30;
+}
+
+body {
+    font-family: 'Montserrat Alternates', sans-serif;
+    color: var(--black);
+    background-color: var(--white);
+    line-height: 1.6;
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Typography Sizes */
+h1, h2, .section-title {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+h3, .card-title {
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+p, li, span, a, div {
+    font-size: 14px;
+}
+
+/* Header */
+.header {
+    background-color: var(--white);
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+/* 🔧 FIX: Ссылка внутри логотипа — флекс-контейнер для выравнивания */
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.logo-icon {
+    background-color: var(--orange);
+    color: var(--white);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Footer logo - white color */
+.footer-logo-text {
+    color: var(--white) !important;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Buttons */
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Montserrat Alternates', sans-serif;
+}
+
+.btn-login {
+    background: transparent;
+    color: var(--black);
+    border: 2px solid var(--black);
+}
+
+.btn-login:hover {
+    background-color: var(--black);
+    color: var(--white);
+}
+
+.btn-login .login-icon {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+}
+
+.btn-register {
+    background-color: var(--orange);
+    color: var(--white);
+}
+
+.btn-register:hover {
+    background-color: #E88B0E;
+}
+
+.btn-register .register-icon {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+.btn-primary {
+    background-color: var(--orange);
+    color: var(--white);
+    width: auto;
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--black);
+    border: 2px solid var(--black);
+    width: 100%;
+}
+
+.btn-hero {
+    font-size: 18px;
+    padding: 16px 32px;
+    margin-top: 20px;
+    font-weight: 600;
+    border-radius: 12px;
+}
+
+.btn-hero-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+/* Profile Button for authorized users */
+.btn-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--orange);
+    color: var(--white);
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.btn-profile:hover {
+    background-color: #E88B0E;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(253, 156, 25, 0.3);
+}
+
+.profile-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, var(--orange-gradient-start) 0%, var(--orange-gradient-end) 100%);
+    padding: 60px 0;
+}
+
+.hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.hero-subtitle {
+    color: var(--orange);
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.hero-title {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: var(--black);
+}
+
+.hero-description {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--black);
+    margin-bottom: 30px;
+}
+
+.hero-image-wrapper {
+    position: relative;
+}
+
+.hero-image {
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+.floating-badge {
+    position: absolute;
+    bottom: 20px;
+    left: -20px;
+    background: var(--white);
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: float 3s ease-in-out infinite;
+    max-width: 250px;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.badge-dot {
+    width: 12px;
+    height: 12px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.badge-text strong {
+    display: block;
+    color: var(--black);
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-weight: 700;
+}
+
+.badge-text p {
+    color: #666;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* Pricing Section */
+.pricing {
+    background-color: var(--gray-bg);
+    padding: 80px 0;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 10px;
+    color: var(--black);
+}
+
+.section-subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 50px;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.pricing-card {
+    background: var(--white);
+    padding: 40px 30px;
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.pricing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.pricing-card.featured {
+    border-color: var(--orange);
+    box-shadow: 0 10px 40px rgba(253, 156, 25, 0.2);
+}
+
+.hit-label {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: var(--orange);
+    color: var(--white);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.card-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
+    background-color: var(--orange-gradient-start);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.card-icon img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.card-title {
+    margin-bottom: 15px;
+    color: var(--black);
+}
+
+.card-price {
+    margin-bottom: 25px;
+}
+
+.price {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--orange);
+}
+
+.price-unit {
+    font-size: 14px;
+    color: #666;
+}
+
+.card-features {
+    list-style: none;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.card-features li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    color: #666;
+    font-size: 14px;
+}
+
+.card-features li:last-child {
+    border-bottom: none;
+}
+
+.card-note {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 20px;
+}
+
+/* Одинаковые кнопки для всех тарифов */
+.pricing-card .btn {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat Alternates', sans-serif;
+    margin-top: auto;
+}
+
+.pricing-card .btn-outline {
+    background: transparent;
+    color: var(--black);
+    border: 2px solid var(--black);
+}
+
+.pricing-card .btn-outline:hover {
+    background-color: var(--black);
+    color: var(--white);
+}
+
+.pricing-card .btn-primary {
+    background-color: var(--orange);
+    color: var(--white);
+    border: 2px solid var(--orange);
+}
+
+.pricing-card .btn-primary:hover {
+    background-color: #E88B0E;
+    border-color: #E88B0E;
+}
+
+/* Why Choose Us Section */
+.why-us {
+    padding: 80px 0;
+    background-color: var(--white);
+}
+
+.why-title {
+    font-size: 40px;
+    margin-bottom: 40px;
+}
+
+.why-content {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.why-image {
+    width: 100%;
+}
+
+.why-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    display: block;
+}
+
+.why-description {
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 40px;
+    color: var(--black);
+    text-align: justify;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.stat-card {
+    padding: 30px;
+    border-radius: 16px;
+    text-align: center;
+}
+
+.stat-icon-img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--black);
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #666;
+}
+
+.stat-orange {
+    background-color: var(--orange-gradient-start);
+}
+
+.stat-green {
+    background-color: #E8F5E9;
+}
+
+.stat-blue {
+    background-color: #E3F2FD;
+}
+
+.stat-pink {
+    background-color: #FCE4EC;
+}
+
+/* Promotions Section */
+.promotions {
+    padding: 80px 0;
+    background: transparent;
+}
+
+.promotions-wrapper {
+    background: linear-gradient(135deg, var(--promo-gradient-start) 0%, var(--promo-gradient-end) 100%);
+    border-radius: 24px;
+    padding: 60px 40px;
+}
+
+.text-white {
+    color: var(--white) !important;
+}
+
+.text-white-opacity {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.promo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    max-width: 900px;
+    margin: 40px auto 0;
+}
+
+.promo-card {
+    background: var(--white);
+    padding: 40px;
+    border-radius: 20px;
+    position: relative;
+}
+
+.promo-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.promo-badge.new {
+    background-color: #E3F2FD;
+    color: #1976D2;
+}
+
+.promo-badge.special {
+    background-color: #E8F5E9;
+    color: #388E3C;
+}
+
+.promo-card-icon {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    margin-bottom: 20px;
+    padding: 4px;
+    border-radius: 12px;
+}
+
+.promo-card:first-child .promo-card-icon {
+    background-color: #E3F2FD;
+}
+
+.promo-card:last-child .promo-card-icon {
+    background-color: #E8F5E9;
+}
+
+.promo-title {
+    font-size: 25px;
+    margin-bottom: 15px;
+    color: var(--black);
+}
+
+.promo-text {
+    color: #666;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--black);
+    color: var(--white);
+    padding: 60px 0 30px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1.5fr;
+    gap: 60px;
+    margin-bottom: 40px;
+}
+
+.footer-description {
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 15px;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.footer-title {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: var(--white);
+}
+
+.footer-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.contact-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.3s;
+    font-size: 14px;
+}
+
+.contact-link:hover {
+    color: var(--orange);
+}
+
+.footer-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+}
+
+.legal-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.legal-icon-img {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+.legal-title {
+    display: block;
+    color: var(--white);
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.legal-inn {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 30px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .hero-content,
+    .why-content {
+        grid-template-columns: 1fr;
+    }
+
+    .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+
+    .promo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .hero-title {
+        font-size: 28px;
+    }
+
+    .promotions-wrapper {
+        padding: 40px 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .nav {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-description {
+        font-size: 16px;
+    }
+
+    .btn-hero {
+        font-size: 16px;
+        padding: 14px 28px;
+    }
+
+    .btn-login {
+        width: 100%;
+        justify-content: center;
+    }
+}

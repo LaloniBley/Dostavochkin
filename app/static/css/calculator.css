@@ -1,0 +1,294 @@
+/* Calculator Section - специфичные стили */
+.calculator {
+    padding: 0;
+}
+
+/* Back Button Wrapper - слева под хеддером */
+.back-wrapper {
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-gray);
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 20px;
+    border: 2px solid var(--border-gray);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+}
+
+.back-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+/* Calc Header */
+.calc-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.calc-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--black);
+}
+
+.calc-subtitle {
+    font-size: 16px;
+    color: var(--text-gray);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.calc-wrapper {
+    max-width: 600px;
+    margin: 0 auto 30px;
+    background-color: var(--white);
+    border: 2px solid var(--border-gray);
+    border-radius: 20px;
+    padding: 40px;
+}
+
+/* Form Styles */
+.calc-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black);
+}
+
+.input-with-suffix {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px 50px 14px 16px;
+    border: 2px solid var(--border-gray);
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: 'Montserrat Alternates', sans-serif;
+    background-color: var(--white);
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(253, 156, 25, 0.1);
+}
+
+.input-suffix {
+    position: absolute;
+    right: 16px;
+    color: var(--text-gray);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+/* Select Wrapper */
+.select-wrapper {
+    position: relative;
+}
+
+.form-select {
+    width: 100%;
+    padding: 14px 45px 14px 16px;
+    border: 2px solid var(--border-gray);
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: 'Montserrat Alternates', sans-serif;
+    background-color: var(--white);
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.form-select:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(253, 156, 25, 0.1);
+}
+
+.select-arrow {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.arrow-icon {
+    width: 12px;
+    height: 12px;
+    object-fit: contain;
+}
+
+/* Calculate Button */
+.btn-calculate {
+    width: 100%;
+    padding: 16px 32px;
+    background-color: var(--orange);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Montserrat Alternates', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-calculate:hover {
+    background-color: #E88B0E;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(253, 156, 25, 0.3);
+}
+
+.btn-calculate:active {
+    transform: translateY(0);
+}
+
+/* Result */
+.calc-result {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--result-bg);
+    border-radius: 12px;
+    padding: 20px 30px;
+    margin-top: 25px;
+}
+
+.result-label {
+    font-size: 18px;
+    color: var(--black);
+    font-weight: 500;
+}
+
+.result-price {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--black);
+}
+
+/* New Order Button */
+.calc-footer {
+    text-align: center;
+}
+
+.btn-new-order {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    background-color: var(--orange);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Montserrat Alternates', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-new-order:hover {
+    background-color: #E88B0E;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(253, 156, 25, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .calc-title {
+        font-size: 24px;
+    }
+
+    .calc-subtitle {
+        font-size: 14px;
+    }
+
+    .calc-wrapper {
+        padding: 30px 20px;
+    }
+
+    .form-input,
+    .form-select {
+        font-size: 14px;
+        padding: 12px 45px 12px 14px;
+    }
+
+    .btn-calculate,
+    .btn-new-order {
+        font-size: 16px;
+        padding: 14px 24px;
+    }
+
+    .calc-result {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .result-price {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .calc-header {
+        margin-bottom: 30px;
+    }
+
+    .calc-wrapper {
+        padding: 25px 15px;
+        border-radius: 15px;
+    }
+
+    .form-label {
+        font-size: 14px;
+    }
+
+    .result-label {
+        font-size: 16px;
+    }
+
+    .btn-back {
+        font-size: 14px;
+        padding: 6px 16px;
+    }
+
+    .back-icon {
+        width: 14px;
+        height: 14px;
+    }
+}

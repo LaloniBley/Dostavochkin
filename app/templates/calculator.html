@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Калькулятор стоимости - Доставочкин{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/calculator.css') }}">
+<style>
+    /* Стили только для кнопки "Назад" */
+    .btn-back {
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-gray);
+        font-size: 16px;
+        padding: 8px 20px;
+        border: 2px solid var(--border-gray);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        background: transparent;
+        cursor: pointer;
+    }
+    .btn-back:hover {
+        border-color: var(--orange);
+        color: var(--orange);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="back-wrapper">
+        <a href="/profile" class="btn-back">Назад</a>
+    </div>
+
+    <div class="calc-header">
+        <h1 class="calc-title">Калькулятор стоимости заказа</h1>
+        <p class="calc-subtitle">Рассчитайте предварительную стоимость доставки в зависимости от расстояния и тарифа</p>
+    </div>
+
+    <div class="calc-wrapper">
+        <form class="calc-form" id="calculatorForm">
+            <div class="form-group">
+                <label class="form-label">Расстояние (км):</label>
+                <div class="input-with-suffix">
+                    <input type="number" name="distance" id="distance" class="form-input" placeholder="34,5754" step="0.0001" min="0.001" required>
+                    <span class="input-suffix">км</span>
+                </div>
+                <small class="form-hint">Расстояние должно быть от 0.001 до 70 км</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Вес (кг):</label>
+                <div class="input-with-suffix">
+                    <input type="number" name="weight" id="weight" class="form-input" placeholder="434" step="0.1" min="0" required>
+                    <span class="input-suffix">кг</span>
+                </div>
+                <small class="form-hint" id="weightHint">Для тарифа "Доходяга" вес от 5 до 10 кг, для "Бусик" до 200 кг</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Тариф:</label>
+                <div class="select-wrapper">
+                    <select name="tariff" id="tariff" class="form-select" required>
+                        <option value="" disabled selected>Выберите тариф</option>
+                        <option value="dohodyaga">Доходяга (29 ₽/км, от 5 до 10 кг, до 70 км)</option>
+                        <option value="busik">Бусик (59 ₽/км, до 200 кг)</option>
+                        <option value="skorohod">Скороход (129 ₽/км, любой вес)</option>
+                    </select>
+                    <span class="select-arrow">
+                        <img src="{{ url_for('static', filename='images/icon-arrow-down.png') }}" alt="" class="arrow-icon">
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Промокод:</label>
+                <input type="text" name="promo_code" id="promoCode" class="form-input" placeholder="Введите промокод">
+            </div>
+
+            <button type="submit" class="btn-calculate">Рассчитать</button>
+        </form>
+
+        <div class="calc-result" id="calcResult" style="display: none;">
+            <div class="result-label">К оплате курьеру:</div>
+            <div class="result-price" id="resultPrice">0 ₽</div>
+        </div>
+    </div>
+
+    <div class="calc-footer">
+        <button class="btn-new-order" onclick="window.location.href='/order'">+ Новый заказ</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const RATES = {
+        'dohodyaga': 29,
+        'busik': 59,
+        'skorohod': 129
+    };
+
+    // Функция валидации расстояния
+    function validateDistance(distance) {
+        if (isNaN(distance) || distance === '') {
+            return { valid: false, message: 'Введите расстояние' };
+        }
+        if (distance <= 0) {
+            return { valid: false, message: 'Расстояние должно быть больше 0 км' };
+        }
+        if (distance > 70) {
+            return { valid: false, message: 'Расстояние не может превышать 70 км' };
+        }
+        return { valid: true };
+    }
+
+    // Функция валидации веса
+    function validateWeight(weight, tariff) {
+        if (isNaN(weight) || weight === '') {
+            return { valid: false, message: 'Введите вес' };
+        }
+        if (weight < 0) {
+            return { valid: false, message: 'Вес не может быть отрицательным' };
+        }
+        if (tariff === 'dohodyaga') {
+            if (weight < 5) {
+                return { valid: false, message: 'Тариф "Доходяга" доступен для веса от 5 кг' };
+            }
+            if (weight > 10) {
+                return { valid: false, message: 'Тариф "Доходяга" доступен для веса до 10 кг' };
+            }
+        }
+        if (tariff === 'busik' && weight > 200) {
+            return { valid: false, message: 'Тариф "Бусик" доступен для веса до 200 кг' };
+        }
+        return { valid: true };
+    }
+
+    // Функция валидации тарифа
+    function validateTariff(tariff) {
+        if (!tariff) {
+            return { valid: false, message: 'Выберите тариф' };
+        }
+        return { valid: true };
+    }
+
+    // Обновление подсказки по весу при смене тарифа
+    document.getElementById('tariff').addEventListener('change', function() {
+        const tariff = this.value;
+        const weightHint = document.getElementById('weightHint');
+        const weightInput = document.getElementById('weight');
+
+        if (tariff === 'dohodyaga') {
+            weightHint.innerHTML = 'Для тарифа "Доходяга" вес от 5 до 10 кг';
+            weightHint.style.color = '#FD9C19';
+            weightInput.min = 5;
+            weightInput.max = 10;
+            weightInput.step = 0.1;
+        } else if (tariff === 'busik') {
+            weightHint.innerHTML = 'Для тарифа "Бусик" вес до 200 кг';
+            weightHint.style.color = '#FD9C19';
+            weightInput.min = 0;
+            weightInput.max = 200;
+            weightInput.step = 0.1;
+        } else if (tariff === 'skorohod') {
+            weightHint.innerHTML = 'Для тарифа "Скороход" вес не ограничен';
+            weightHint.style.color = '#666666';
+            weightInput.min = 0;
+            weightInput.max = 999999;
+            weightInput.step = 0.1;
+        }
+    });
+
+    // Обработчик отправки формы
+    document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const distance = parseFloat(document.getElementById('distance').value);
+        const weight = parseFloat(document.getElementById('weight').value);
+        const tariff = document.getElementById('tariff').value;
+        const promoCode = document.getElementById('promoCode').value.trim().toUpperCase();
+
+        // Валидация
+        const distanceValidation = validateDistance(distance);
+        if (!distanceValidation.valid) {
+            alert(distanceValidation.message);
+            return;
+        }
+
+        const weightValidation = validateWeight(weight, tariff);
+        if (!weightValidation.valid) {
+            alert(weightValidation.message);
+            return;
+        }
+
+        const tariffValidation = validateTariff(tariff);
+        if (!tariffValidation.valid) {
+            alert(tariffValidation.message);
+            return;
+        }
+
+        // Дополнительная проверка для Доходяга: расстояние не более 70 км
+        if (tariff === 'dohodyaga' && distance > 70) {
+            alert('Тариф "Доходяга" доступен для расстояния до 70 км');
+            return;
+        }
+
+        // Расчёт стоимости
+        let totalCost = distance * RATES[tariff];
+
+        // Применяем промокод
+        if (promoCode === 'START20') {
+            totalCost = totalCost * 0.8;
+        }
+
+        // Отображение результата
+        document.getElementById('resultPrice').textContent = Math.round(totalCost) + ' ₽';
+        document.getElementById('calcResult').style.display = 'flex';
+    });
+
+    // Обработчик кнопки "Новый заказ"
+    document.querySelector('.btn-new-order').addEventListener('click', function() {
+        document.getElementById('calculatorForm').reset();
+        document.getElementById('calcResult').style.display = 'none';
+        document.getElementById('tariff').selectedIndex = 0;
+        document.getElementById('weightHint').innerHTML = 'Для тарифа "Доходяга" вес от 5 до 10 кг, для "Бусик" до 200 кг';
+        document.getElementById('weightHint').style.color = '#666666';
+        document.getElementById('weight').min = 0;
+        document.getElementById('weight').max = 999999;
+    });
+</script>
+{% endblock %}

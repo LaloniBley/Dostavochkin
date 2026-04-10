@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - Доставочкин</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <style>
+        /* Стили для всплывающих уведомлений */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-error {
+            background: #f44336;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            font-size: 14px;
+        }
+
+        .toast-success {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            font-size: 14px;
+        }
+
+        .toast-warning {
+            background: #ff9800;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            font-size: 14px;
+        }
+
+        .toast-close {
+            margin-left: auto;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .toast-close:hover {
+            opacity: 0.8;
+        }
+
+        /* Стили для ошибок под полями */
+        .field-error {
+            color: #f44336;
+            font-size: 12px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .form-input.error {
+            border-color: #f44336;
+            background-color: #fff5f5;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <a href="/">
+                    <span class="logo-icon">Д</span>
+                    <span class="logo-text">Доставочкин</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Контейнер для всплывающих уведомлений -->
+    <div id="toastContainer" class="toast-notification"></div>
+
+    <section class="registration">
+        <div class="container">
+            <div class="reg-header">
+                <h1 class="reg-title">Регистрация</h1>
+                <p class="reg-subtitle">Создайте аккаунт и начните отправлять посылки</p>
+            </div>
+
+            <div class="reg-content">
+                <form class="reg-form" id="registerForm" action="/register" method="POST">
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <img src="{{ url_for('static', filename='images/icon-lastname.png') }}" alt="" class="field-icon">
+                            Фамилия
+                            <span class="required-mark">*</span>
+                        </label>
+                        <input type="text" name="lastname" id="lastname" class="form-input" placeholder="Иванов" required>
+                        <span class="field-error" id="lastnameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <img src="{{ url_for('static', filename='images/icon-lastname.png') }}" alt="" class="field-icon">
+                            Имя
+                            <span class="required-mark">*</span>
+                        </label>
+                        <input type="text" name="firstname" id="firstname" class="form-input" placeholder="Иван" required>
+                        <span class="field-error" id="firstnameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <img src="{{ url_for('static', filename='images/icon-lastname.png') }}" alt="" class="field-icon">
+                            Отчество
+                        </label>
+                        <input type="text" name="middlename" id="middlename" class="form-input" placeholder="Иванович">
+                        <span class="field-error" id="middlenameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <img src="{{ url_for('static', filename='images/icon-phone-form.png') }}" alt="" class="field-icon">
+                            Телефон
+                            <span class="required-mark">*</span>
+                        </label>
+                        <input type="tel" name="phone" id="phone" class="form-input" placeholder="+78005553535" required>
+                        <span class="field-error" id="phoneError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <img src="{{ url_for('static', filename='images/icon-login-field.png') }}" alt="" class="field-icon">
+                            Логин
+                            <span class="required-mark">*</span>
+                        </label>
+                        <input type="text" name="login" id="login" class="form-input" placeholder="Realboy123" required>
+                        <span class="field-error" id="loginError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <img src="{{ url_for('static', filename='images/icon-password.png') }}" alt="" class="field-icon">
+                            Пароль
+                            <span class="required-mark">*</span>
+                        </label>
+                        <div class="password-wrapper">
+                            <input type="password" name="password" id="password" class="form-input" placeholder="********" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('password', this)">
+                                <img src="{{ url_for('static', filename='images/icon-eye.png') }}" alt="" class="eye-icon">
+                            </button>
+                        </div>
+                        <span class="field-error" id="passwordError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <img src="{{ url_for('static', filename='images/icon-password.png') }}" alt="" class="field-icon">
+                            Повторите пароль
+                            <span class="required-mark">*</span>
+                        </label>
+                        <div class="password-wrapper">
+                            <input type="password" name="password_confirm" id="password_confirm" class="form-input" placeholder="********" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('password_confirm', this)">
+                                <img src="{{ url_for('static', filename='images/icon-eye.png') }}" alt="" class="eye-icon">
+                            </button>
+                        </div>
+                        <span class="field-error" id="passwordConfirmError"></span>
+                    </div>
+
+                    <button type="submit" class="btn-register-submit">Зарегистрироваться</button>
+
+                    <div class="login-link">
+                        Уже есть аккаунт? <a href="/login" class="link-login">Войти</a>
+                    </div>
+                </form>
+
+                <div class="requirements-box">
+                    <div class="requirements-section">
+                        <h4 class="requirements-title">Требования к паролю:</h4>
+                        <ol class="requirements-list">
+                            <li>Длина от 8 до 32 символов</li>
+                            <li>Наличие цифр, букв и спецсимволов</li>
+                            <li>Наличие минимум по одной латинских строчной и заглавной букв</li>
+                        </ol>
+                    </div>
+
+                    <div class="requirements-section">
+                        <h4 class="requirements-title">Требования к логину:</h4>
+                        <ol class="requirements-list">
+                            <li>Длина от 4 до 16 символов</li>
+                            <li>Наличие цифр и латинских букв</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 Доставочкин. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Функция показа всплывающего уведомления
+        function showToast(message, type = 'error') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-${type}`;
+
+            const icon = type === 'error' ? '❌' : (type === 'success' ? '✅' : '⚠️');
+            toast.innerHTML = `
+                <span>${icon}</span>
+                <span>${message}</span>
+                <span class="toast-close" onclick="this.parentElement.remove()">×</span>
+            `;
+
+            container.appendChild(toast);
+
+            // Автоматическое удаление через 5 секунд
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 5000);
+        }
+
+        // Функция валидации формы на клиенте
+        function validateForm() {
+            let isValid = true;
+
+            // Очищаем предыдущие ошибки
+            document.querySelectorAll('.field-error').forEach(el => el.textContent = '');
+            document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+
+            // Фамилия
+            const lastname = document.getElementById('lastname').value.trim();
+            if (!lastname) {
+                document.getElementById('lastnameError').textContent = 'Фамилия обязательна для заполнения';
+                document.getElementById('lastname').classList.add('error');
+                isValid = false;
+            } else if (!/^[а-яА-Яa-zA-Z]+$/.test(lastname)) {
+                document.getElementById('lastnameError').textContent = 'Фамилия должна содержать только буквы';
+                document.getElementById('lastname').classList.add('error');
+                isValid = false;
+            }
+
+            // Имя
+            const firstname = document.getElementById('firstname').value.trim();
+            if (!firstname) {
+                document.getElementById('firstnameError').textContent = 'Имя обязательно для заполнения';
+                document.getElementById('firstname').classList.add('error');
+                isValid = false;
+            } else if (!/^[а-яА-Яa-zA-Z]+$/.test(firstname)) {
+                document.getElementById('firstnameError').textContent = 'Имя должна содержать только буквы';
+                document.getElementById('firstname').classList.add('error');
+                isValid = false;
+            }
+
+            // Отчество (опционально, но если заполнено - проверяем)
+            const middlename = document.getElementById('middlename').value.trim();
+            if (middlename && !/^[а-яА-Яa-zA-Z]*$/.test(middlename)) {
+                document.getElementById('middlenameError').textContent = 'Отчество должно содержать только буквы';
+                document.getElementById('middlename').classList.add('error');
+                isValid = false;
+            }
+
+            // Телефон
+            const phone = document.getElementById('phone').value.trim();
+            const phonePattern = /^(\+7|8)[0-9]{10}$/;
+            if (!phone) {
+                document.getElementById('phoneError').textContent = 'Телефон обязателен для заполнения';
+                document.getElementById('phone').classList.add('error');
+                isValid = false;
+            } else if (!phonePattern.test(phone)) {
+                document.getElementById('phoneError').textContent = 'Введите корректный номер телефона (например: +78005553535 или 88005553535)';
+                document.getElementById('phone').classList.add('error');
+                isValid = false;
+            }
+
+            // Логин
+            const login = document.getElementById('login').value.trim();
+            const loginPattern = /^[a-zA-Z0-9]+$/;
+            if (!login) {
+                document.getElementById('loginError').textContent = 'Логин обязателен для заполнения';
+                document.getElementById('login').classList.add('error');
+                isValid = false;
+            } else if (login.length < 4 || login.length > 16) {
+                document.getElementById('loginError').textContent = 'Логин должен быть от 4 до 16 символов';
+                document.getElementById('login').classList.add('error');
+                isValid = false;
+            } else if (!loginPattern.test(login)) {
+                document.getElementById('loginError').textContent = 'Логин должен содержать только латинские буквы и цифры';
+                document.getElementById('login').classList.add('error');
+                isValid = false;
+            }
+
+            // Пароль
+            const password = document.getElementById('password').value;
+            const passwordPattern = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).+$/;
+            if (!password) {
+                document.getElementById('passwordError').textContent = 'Пароль обязателен для заполнения';
+                document.getElementById('password').classList.add('error');
+                isValid = false;
+            } else if (password.length < 8 || password.length > 32) {
+                document.getElementById('passwordError').textContent = 'Пароль должен быть от 8 до 32 символов';
+                document.getElementById('password').classList.add('error');
+                isValid = false;
+            } else if (!passwordPattern.test(password)) {
+                document.getElementById('passwordError').textContent = 'Пароль должен содержать цифры, латинские буквы (строчные и заглавные) и спецсимволы';
+                document.getElementById('password').classList.add('error');
+                isValid = false;
+            }
+
+            // Подтверждение пароля
+            const passwordConfirm = document.getElementById('password_confirm').value;
+            if (password !== passwordConfirm) {
+                document.getElementById('passwordConfirmError').textContent = 'Пароли не совпадают';
+                document.getElementById('password_confirm').classList.add('error');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                showToast('Пожалуйста, исправьте ошибки в форме', 'error');
+            }
+
+            return isValid;
+        }
+
+        // Обработчик отправки формы
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            if (!validateForm()) {
+                e.preventDefault();
+            }
+        });
+
+        // Показываем flash сообщения как всплывающие уведомления
+        document.addEventListener('DOMContentLoaded', function() {
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        showToast('{{ message|safe }}', '{{ category }}');
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        });
+
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+            } else {
+                input.type = 'password';
+            }
+        }
+    </script>
+</body>
+</html>
