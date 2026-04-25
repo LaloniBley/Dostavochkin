@@ -181,6 +181,32 @@ def order_management():
             flash('Заказ с таким номером не найден', 'error')
     return render_template("order-management.html", order=order)
 
+
+@app.route('/api/find-order/<order_number>', methods=['GET'])
+def api_find_order(order_number):
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Не авторизован'}), 401
+    order = storage.get_order_by_number(order_number)
+    if not order:
+        return jsonify({'success': False, 'message': 'Заказ не найден'}), 404
+    if order.user_id != session['user_id']:
+        return jsonify({'success': False, 'message': 'У вас нет доступа к этому заказу'}), 403
+    return jsonify({
+        'success': True,
+        'order': {
+            'id': order.id,
+            'order_id': order.order_id,
+            'pickup_address': order.pickup_address,
+            'delivery_address': order.delivery_address,
+            'courier_date': order.courier_date,
+            'recipient_phone': order.recipient_phone,
+            'distance': order.distance,
+            'tariff': order.tariff,
+            'price': order.price,
+            'status': order.status
+        }
+    }), 200
+
 @app.route('/update-order/<order_id>', methods=['POST'])
 def update_order(order_id):
     if 'user_id' not in session:
