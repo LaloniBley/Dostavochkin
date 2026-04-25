@@ -181,7 +181,6 @@ def order_management():
             flash('Заказ с таким номером не найден', 'error')
     return render_template("order-management.html", order=order)
 
-
 @app.route('/api/find-order/<order_number>', methods=['GET'])
 def api_find_order(order_number):
     if 'user_id' not in session:
